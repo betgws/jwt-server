@@ -1,5 +1,6 @@
 package JWT.JwtServer.config;
 
+import JWT.JwtServer.fillter.MyFillterOne;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CorsFilter;
 
@@ -31,6 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+       // http.addFilterBefore(new MyFillterOne(), BasicAuthenticationFilter.class); //Basic 뭐시기가 실행되기 전에 한다는 뜻
         http.csrf(CsrfConfigurer::disable);
         http.authorizeHttpRequests(authorize ->
                 authorize
@@ -46,7 +49,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// 세션을 사용하지 않갰다는 말
         .addFilter(corsFilter) //@CrossOrigin(인증X), 시큐리티 필터에 등록 인증(O)
         .formLogin(AbstractHttpConfigurer::disable)
-        .httpBasic(AbstractHttpConfigurer::disable);
+        .httpBasic(AbstractHttpConfigurer::disable); // 매번 요청할 때마다 ID랑 Password를 달고 옴
 
 
 
