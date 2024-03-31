@@ -19,4 +19,5 @@ spring:
       ddl-auto: update #create update none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
