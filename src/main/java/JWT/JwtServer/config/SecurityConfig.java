@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-       // http.addFilterBefore(new MyFillterOne(), BasicAuthenticationFilter.class); //Basic 뭐시기가 실행되기 전에 한다는 뜻
+        http.addFilterBefore(new MyFillterOne(), BasicAuthenticationFilter.class); //Basic 뭐시기가 실행되기 전에 한다는 뜻
         http.csrf(CsrfConfigurer::disable);
         http.authorizeHttpRequests(authorize ->
                 authorize
