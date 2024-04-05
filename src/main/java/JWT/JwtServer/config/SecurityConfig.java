@@ -48,7 +48,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+        AuthenticationManagerBuilder sharedObject = http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        sharedObject.userDetailsService(this.userDetailsService);
+        AuthenticationManager authenticationManager = sharedObject.build();
+
+        http.authenticationManager(authenticationManager);
 
         http.addFilterBefore(new MyFillterOne(), BasicAuthenticationFilter.class); //Basic 뭐시기가 실행되기 전에 한다는 뜻
         http.csrf(CsrfConfigurer::disable);

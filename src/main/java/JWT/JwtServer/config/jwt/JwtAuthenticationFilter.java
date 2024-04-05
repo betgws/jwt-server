@@ -1,12 +1,19 @@
 package JWT.JwtServer.config.jwt;
 
+import JWT.JwtServer.config.auth.PrincipalDetails;
+import JWT.JwtServer.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 
 // 스프링 시큐리티에서 이 필터가 있음
@@ -21,7 +28,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
-
     // 로그인 요청을 하면 로그인 시도를 위해서 실행되는 함수
 
     @Override
@@ -33,6 +39,38 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         //3. PrincipalDetails를 세션에 담고 (권한 관리를 위해서)
         // 4. JWT 토근을 만들어서 응답해주면 됨
         System.out.println("JwtAuthenticationFilter : 로그인 시도중");
-        return super.attemptAuthentication(request, response);
+
+        //1. username, password를 받는다.
+        try {
+           // BufferedReader br =request.getReader();
+           // String input = null;
+           // while ((input = br.readLine()) != null){
+           //     System.out.println(input);
+            //}
+           // System.out.println(request.getInputStream());
+            ObjectMapper om = new ObjectMapper(); // Json 객체를 파싱해줌
+            User user = om.readValue(request.getInputStream(), User.class); // user 오브젝트에 담아줌
+            System.out.println(user);
+
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
+
+            // PrincipalDetailsService의 loadUserByUsername() 함수가 실행됨
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+            // authentication 객체가 session영역에 저장됨 => 로그인이 되었다는 뜻.
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            System.out.println(principalDetails.getUser().getUsername());
+
+            return authentication;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
     }
+
+
 }
