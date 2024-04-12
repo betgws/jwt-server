@@ -53,6 +53,8 @@ public class JWTFilter extends OncePerRequestFilter{ // 요청에 대해서 한�
         userEntity.setPassword("imsipassword");//여기에 정확한 비밀번호를 넣을 필요는 없음
         userEntity.setRole(role);
 
+        // -> 이부분 이해 안감 이미 회원가입을 한 상태고 , 로그인을 하면 DB에 UserEntity 정보가 있을 텐데 왜 또 만들어줌?
+
 
         //userdetails 에 회원 정보 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
