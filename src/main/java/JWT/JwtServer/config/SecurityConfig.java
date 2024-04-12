@@ -1,6 +1,7 @@
 package JWT.JwtServer.config;
 
 
+import JWT.JwtServer.jwt.JWTFilter;
 import JWT.JwtServer.jwt.JWTUtil;
 import JWT.JwtServer.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +56,9 @@ public class SecurityConfig {
                         .requestMatchers("/login","/","/join").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated() );  // 다른 요청에 대해선 로그인된 사용자만 받겠다.
+
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class );
 
